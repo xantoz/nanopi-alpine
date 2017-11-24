@@ -127,3 +127,5 @@ main()
     mount_filesystems
     fill_filesystems
 }
+
+main
