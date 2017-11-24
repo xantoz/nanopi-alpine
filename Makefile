@@ -39,11 +39,12 @@ all: output/nanopi-alpine.img
 sources/$(ROOTFS_TARBALL):
 	wget -O 'sources/$(ROOTFS_TARBALL)' '$(ROOTFS_TARBALL_URL)'
 
+.SECONDARY: sources/linux.git
 sources/u-boot.git:
 	git clone --depth=1 git://git.denx.de/u-boot.git 'sources/u-boot'
 	touch '$@' # sentinel file
 
-sources/u-boot/u-boot-sunxi-with-spl.bin: sources/u-boot.git
+sources/u-boot/.config: sources/u-boot.git
 	if [ ! -f u-boot.config ] || [ -n '$(DO_UBOOT_DEFCONFIG)' ]; then    \
 	    $(MAKE) -C sources/u-boot/ '$(UBOOT_BOARD_DEFCONFIG)_defconfig'; \
 	else                                                                 \
@@ -52,16 +53,19 @@ sources/u-boot/u-boot-sunxi-with-spl.bin: sources/u-boot.git
 	if [ -n '$(DO_UBOOT_MENUCONFIG)' ]; then                             \
 	    $(MAKE) -C sources/u-boot/ menuconfig;                           \
 	fi
+
+sources/u-boot/u-boot-sunxi-with-spl.bin: sources/u-boot/.config
 	$(MAKE) -C sources/u-boot/ all
 
 output/$(UBOOT_FORMAT_CUSTOM_NAME): sources/u-boot/$(UBOOT_FORMAT_CUSTOM_NAME)
 	cp $^ $@
 
+.SECONDARY: sources/linux.git
 sources/linux.git:
 	git clone --depth=1 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 'sources/linux/'
 	touch '$@' # sentinel file
 
-$(KERNEL_PRODUCTS): sources/linux.git
+sources/linux/.config: sources/linux.git
 	if [ ! -f kernel.config ] || [ -n '$(DO_LINUX_DEFCONFIG)' ]; then   \
 	    $(MAKE) -C sources/linux/ '$(KERNEL_DEFCONFIG)_defconfig';      \
 	else                                                                \
@@ -70,6 +74,8 @@ $(KERNEL_PRODUCTS): sources/linux.git
 	if [ -n '$(DO_LINUX_MENUCONFIG)' ]; then                            \
 	    $(MAKE) -C sources/linux/ menuconfig;                           \
 	fi
+
+$(KERNEL_PRODUCTS): sources/linux/.config
 	$(MAKE) -C sources/linux/ all
 
 $(KERNEL_PRODUCTS_OUTPUT): $(KERNEL_PRODUCTS)
