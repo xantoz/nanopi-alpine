@@ -1,4 +1,4 @@
-sclean#!/bin/bash
+#!/bin/bash
 set -euo pipefail
 
 readonly CCred=`printf '\033[0;31m'`
