@@ -41,8 +41,8 @@ cleanup()
 {
     set +eu
     # We end up in this function at the end of script execution
-    [ -n "${LOOP:-}" ] && unmap_partitions
     [ -n "${ROOT_MOUNT:-}" -o -n "${BOOT_MOUNT:-}" ] && unmount_filesystems
+    [ -n "${LOOP:-}" ] && unmap_partitions
 }
 trap cleanup 0
 
