@@ -86,7 +86,7 @@ output/nanopi-alpine.img: output/$(UBOOT_FORMAT_CUSTOM_NAME) output/boot.scr $(K
 	DTB='$(word 2,$(KERNEL_PRODUCTS_OUTPUT))'      \
 	ROOTFS_TARBALL='sources/$(ROOTFS_TARBALL)'     \
 	IMAGE='$@'                                     \
-	sudo make-image.sh
+	sudo ./make-image.sh
 
 .PHONY: clean
 clean:
