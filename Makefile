@@ -86,13 +86,14 @@ output/boot.scr: boot.cmd
 
 output/nanopi-alpine.img: output/$(UBOOT_FORMAT_CUSTOM_NAME) output/boot.scr $(KERNEL_PRODUCTS_OUTPUT)
 	truncate -s '$(IMAGE_SIZE)' '$@'
-	UBOOT='$(UBOOT_FORMAT_CUSTOM_NAME)'            \
-	BOOTSCR='output/boot.scr'                      \
-	KERNEL='$(word 1,$(KERNEL_PRODUCTS_OUTPUT))'   \
-	DTB='$(word 2,$(KERNEL_PRODUCTS_OUTPUT))'      \
-	ROOTFS_TARBALL='sources/$(ROOTFS_TARBALL)'     \
-	IMAGE='$@'                                     \
-	sudo ./make-image.sh
+	sudo sh -c "                                       \
+	    UBOOT='output/$(UBOOT_FORMAT_CUSTOM_NAME)'     \
+	    BOOTSCR='output/boot.scr'                      \
+	    KERNEL='$(word 1,$(KERNEL_PRODUCTS_OUTPUT))'   \
+	    DTB='$(word 2,$(KERNEL_PRODUCTS_OUTPUT))'      \
+	    ROOTFS_TARBALL='sources/$(ROOTFS_TARBALL)'     \
+	    IMAGE='$@'                                     \
+	    ./make-image.sh"
 
 .PHONY: clean
 clean:
