@@ -100,13 +100,13 @@ mount_filesystems()
 unmount_filesystems()
 {
     log "Unmounting and cleaning up temp mountpoints"
-    if [ -n "${ROOT_MOUNT:-}" ]; then
-        umount "${ROOT_MOUNT}"
-        rmdir "${ROOT_MOUNT}"
-    fi
     if [ -n "${BOOT_MOUNT:-}" ]; then
         umount "${BOOT_MOUNT}"
         rmdir "${BOOT_MOUNT}"
+    fi
+    if [ -n "${ROOT_MOUNT:-}" ]; then
+        umount "${ROOT_MOUNT}"
+        rmdir "${ROOT_MOUNT}"
     fi
 }
 
