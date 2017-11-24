@@ -29,8 +29,11 @@ log()
 need_env_var()
 {
     for i in "$@"; do
-        var="$(eval echo \"\$"$i"\")"
-        [ -n "${var}" ] || die "Environment variable ${i} not defined, or empty"
+        (
+            set +u
+            var="$(eval echo \"\$"$i"\")"
+            [ -n "${var}" ] || die "Environment variable ${i} not defined, or empty"
+        )
     done
 }
 
