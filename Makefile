@@ -28,7 +28,7 @@ TSTAMP:=$(shell date +'%Y%m%d-%H%M%S')
 SDCARD_IMAGE:=nanopi-alpine-$(TSTAMP).img
 
 KERNEL_PRODUCTS=$(addprefix sources/linux/,arch/arm/boot/zImage arch/arm/boot/dts/$(KERNEL_INTREE_DT_NAME).dtb)
-KERNEL_PRODUCTS_OUTPUT=$(addprefix output,$(notdir $(KERNEL_PRODUCTS)))
+KERNEL_PRODUCTS_OUTPUT=$(addprefix output/,$(notdir $(KERNEL_PRODUCTS)))
 
 # export MKFS_F2FS=/usr/sbin/mkfs.f2fs
 # export SLOAD_F2FS=/usr/sbin/sload.f2fs
