@@ -84,7 +84,7 @@ $(KERNEL_PRODUCTS_OUTPUT): $(KERNEL_PRODUCTS)
 output/boot.scr: boot.cmd
 	mkimage -C none -A arm -T script -d '$^' '$@'
 
-output/nanopi-alpine.img: output/$(UBOOT_FORMAT_CUSTOM_NAME) output/boot.scr $(KERNEL_PRODUCTS_OUTPUT)
+output/nanopi-alpine.img: output/$(UBOOT_FORMAT_CUSTOM_NAME) output/boot.scr sources/$(ROOTFS_TARBALL) $(KERNEL_PRODUCTS_OUTPUT)
 	truncate -s '$(IMAGE_SIZE)' '$@'
 	sudo sh -c "                                       \
 	    UBOOT='output/$(UBOOT_FORMAT_CUSTOM_NAME)'     \
