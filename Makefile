@@ -4,7 +4,7 @@ export ARCH=arm
 ################################################################################
 ## Config
 ################################################################################
-KERNEL_INTREE_DTS_NAME   ?= sun8i-h3-nanopi-neo
+KERNEL_INTREE_DT_NAME   ?= sun8i-h3-nanopi-neo
 KERNEL_DEFCONFIG         ?= sunxi
 
 UBOOT_BOARD_DEFCONFIG    ?= nanopi_neo
@@ -27,7 +27,7 @@ ROOTFS_TARBALL_URL = http://dl-cdn.alpinelinux.org/alpine/v3.6/releases/armhf/$(
 TSTAMP:=$(shell date +'%Y%m%d-%H%M%S')
 SDCARD_IMAGE:=nanopi-alpine-$(TSTAMP).img
 
-KERNEL_PRODUCTS=$(addprefix sources/linux/,arch/arm/boot/zImage arch/arm/boot/$(KERNEL_INTREE_DTS_NAME).dtb)
+KERNEL_PRODUCTS=$(addprefix sources/linux/,arch/arm/boot/zImage arch/arm/boot/dts/$(KERNEL_INTREE_DT_NAME).dtb)
 KERNEL_PRODUCTS_OUTPUT=$(addprefix output,$(notdir $(KERNEL_PRODUCTS)))
 
 # export MKFS_F2FS=/usr/sbin/mkfs.f2fs
