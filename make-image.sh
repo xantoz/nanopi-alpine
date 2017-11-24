@@ -76,7 +76,7 @@ unmap_partitions()
 install_uboot()
 {
     log "Installing u-boot to image"
-    (set -x; dd if="${UBOOT}" of="/dev/${LOOP}" bs=1024 seek=8 conv=fsync,notrunc)
+    (set -x; dd if="${UBOOT}" of="${IMAGE}" bs=1024 seek=8 conv=fsync,notrunc)
     sync
 }
 
