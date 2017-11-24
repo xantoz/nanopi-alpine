@@ -48,12 +48,12 @@ trap cleanup 0
 write_partition_table()
 {
     log "Creating partition table"
-    sfdisk --Linux "${IMAGE}" <<-__EOF__
+    sfdisk "${IMAGE}" <<__EOF__
 # partition table of ${IMAGE}
 unit: sectors
 
-${IMAGE}p1 : start=2048, size=   131072, Id= e
-${IMAGE}p2 :             size=         , Id=83
+${IMAGE}p1 : start=2048, size=131072, Id=83
+${IMAGE}p2 :                          Id=83
 __EOF__
 }
 
