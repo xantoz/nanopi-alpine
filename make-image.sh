@@ -62,7 +62,7 @@ map_partitions()
     # Hack to get what loop device kpartx uses for the mappings
     # /dev/mapper/loopXp1 /dev/mapper/loopXp2 /dev/mapper/loopXp3 /dev/mapper/loopXp4
     log "Mapping image partitions"
-    LOOP=$(kpartx -avs ${IMAGE} | head -1 | grep -Po 'loop[[:digit:]]+')
+    LOOP=$(kpartx -avs "${IMAGE}" | grep -Po 'loop[[:digit:]]+' | head -1)
 }
 
 unmap_partitions()
