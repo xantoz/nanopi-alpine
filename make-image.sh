@@ -82,6 +82,8 @@ install_uboot()
 
 create_filesystems()
 {
+    BOOT_DEVICE="/dev/mapper/${LOOP}p1"
+    ROOT_DEVICE="/dev/mapper/${LOOP}p2"
     (set -x; mkfs.ext2 -L nanopi-boot "${BOOT_DEVICE}")
     (set -x; mkfs.f2fs -l nanopi-root "${ROOT_DEVICE}")
 }
@@ -90,8 +92,6 @@ mount_filesystems()
 {
     ROOT_MOUNT="$(mktemp -d /tmp/root.XXXXXX)"
     BOOT_MOUNT="${ROOT_MOUNT}/boot"
-    BOOT_DEVICE="/dev/mapper/${LOOP}p1"
-    ROOT_DEVICE="/dev/mapper/${LOOP}p2"
     (set -x; mount "${ROOT_DEVICE}" "${ROOT_MOUNT}")
     mkdir -p "${BOOT_MOUNT}"
     (set -x; mount "${BOOT_DEVICE}" "${BOOT_MOUNT}")
