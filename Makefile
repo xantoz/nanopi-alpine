@@ -4,7 +4,7 @@ export ARCH=arm
 ################################################################################
 ## Config
 ################################################################################
-KERNEL_INTREE_DT_NAME   ?= sun8i-h3-nanopi-neo
+KERNEL_INTREE_DT_NAME    ?= sun8i-h3-nanopi-neo
 KERNEL_DEFCONFIG         ?= sunxi
 
 UBOOT_BOARD_DEFCONFIG    ?= nanopi_neo
