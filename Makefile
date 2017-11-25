@@ -97,8 +97,8 @@ output/nanopi-alpine.img: output/$(UBOOT_FORMAT_CUSTOM_NAME) output/boot.scr sou
 
 .PHONY: clean
 clean:
-	if [ -d u-boot/ ]; then $(MAKE) -C sources/u-boot/ clean; fi
-	if [ -d linux/ ]; then $(MAKE) -C sources/linux/ clean; fi
+#	if [ -d u-boot/ ]; then $(MAKE) -C sources/u-boot/ clean; fi
+#	if [ -d linux/ ]; then $(MAKE) -C sources/linux/ clean; fi
 	rm -f output/*
 
 .PHONY: distclean
