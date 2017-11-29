@@ -115,6 +115,7 @@ fill_filesystems()
 {
     (set -x; cp "${BOOTSCR}" "${KERNEL}" "${DTB}" "${BOOT_MOUNT}"/)
     (set -x; tar -C "${ROOT_MOUNT}/" -xf "${ROOTFS_TARBALL}")
+    chown 755 "${ROOT_MOUNT}"   # Make sure the root folder in the rootfs is readable by all
 }
 
 main()
