@@ -40,6 +40,8 @@ need_env_var()
 cleanup()
 {
     set +eu
+
+    clean_stage2
     # We end up in this function at the end of script execution
     [ -n "${ROOT_MOUNT:-}" -o -n "${BOOT_MOUNT:-}" ] && unmount_filesystems
     [ -n "${LOOP:-}" ] && unmap_partitions
@@ -118,6 +120,33 @@ fill_filesystems()
     chown 755 "${ROOT_MOUNT}"   # Make sure the root folder in the rootfs is readable by all
 }
 
+prepare_stage2() 
+{
+    log "Preparing stage 2"
+    cp /usr/bin/qemu-arm-static ${ROOT_MOUNT}/usr/bin/
+    cp stage-2.sh ${ROOT_MOUNT}/root/
+
+    mount -t proc none ${ROOT_MOUNT}/proc 
+    mount -o bind /dev ${ROOT_MOUNT}/dev
+
+    mkdir -p ${ROOT_MOUNT}/boot
+    mount -o bind ${BOOT_MOUNT}/ ${ROOT_MOUNT}/boot
+
+    log "Entering stage 2"
+    chroot ${ROOT_MOUNT}/ /usr/bin/qemu-arm-static -cpu cortex-a8 /bin/sh /root/stage-2.sh
+}
+
+clean_stage2() 
+{    
+    log "Cleaing up after stage 2"
+    rm ${ROOT_MOUNT}/usr/bin/qemu-arm-static
+    rm ${ROOT_MOUNT}/root/stage-2.sh
+
+    umount ${ROOT_MOUNT}/proc 
+    umount ${ROOT_MOUNT}/dev
+    umount ${ROOT_MOUNT}/boot
+}
+
 main()
 {
     need_env_var UBOOT BOOTSCR KERNEL DTB ROOTFS_TARBALL IMAGE
@@ -128,6 +157,7 @@ main()
     create_filesystems
     mount_filesystems
     fill_filesystems
+    prepare_stage2
 }
 
 main

@@ -9,11 +9,12 @@ KERNEL_DEFCONFIG         ?= sunxi
 
 UBOOT_BOARD_DEFCONFIG    ?= nanopi_neo
 UBOOT_FORMAT_CUSTOM_NAME ?= u-boot-sunxi-with-spl.bin
+UBOOT_VERSION            ?= v2017.11
 
 IMAGE_SIZE               ?= 4000M
 
-ROOTFS_TARBALL     = alpine-minirootfs-3.6.2-armhf.tar.gz
-ROOTFS_TARBALL_URL = http://dl-cdn.alpinelinux.org/alpine/v3.6/releases/armhf/$(ROOTFS_TARBALL)
+ROOTFS_TARBALL     = alpine-minirootfs-3.7.0-armhf.tar.gz
+ROOTFS_TARBALL_URL = http://dl-cdn.alpinelinux.org/alpine/v3.7/releases/armhf/$(ROOTFS_TARBALL)
 
 ################################################################################
 ## Possible modifiers:
@@ -41,7 +42,7 @@ sources/$(ROOTFS_TARBALL):
 
 .SECONDARY: sources/linux.git
 sources/u-boot.git:
-	git clone --depth=1 git://git.denx.de/u-boot.git 'sources/u-boot'
+	git clone git://git.denx.de/u-boot.git 'sources/u-boot'; cd sources/u-boot; git checkout tags/$(UBOOT_VERSION)
 	touch '$@' # sentinel file
 
 sources/u-boot/.config: sources/u-boot.git
