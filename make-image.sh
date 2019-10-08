@@ -120,13 +120,13 @@ fill_filesystems()
     chown 755 "${ROOT_MOUNT}"   # Make sure the root folder in the rootfs is readable by all
 }
 
-prepare_stage2() 
+prepare_stage2()
 {
     log "Preparing stage 2"
     cp /usr/bin/qemu-arm-static ${ROOT_MOUNT}/usr/bin/
     cp stage-2.sh ${ROOT_MOUNT}/root/
 
-    mount -t proc none ${ROOT_MOUNT}/proc 
+    mount -t proc none ${ROOT_MOUNT}/proc
     mount -o bind /dev ${ROOT_MOUNT}/dev
 
     mkdir -p ${ROOT_MOUNT}/boot
@@ -136,13 +136,13 @@ prepare_stage2()
     chroot ${ROOT_MOUNT}/ /usr/bin/qemu-arm-static -cpu cortex-a8 /bin/sh /root/stage-2.sh
 }
 
-clean_stage2() 
-{    
+clean_stage2()
+{
     log "Cleaing up after stage 2"
     rm ${ROOT_MOUNT}/usr/bin/qemu-arm-static
     rm ${ROOT_MOUNT}/root/stage-2.sh
 
-    umount ${ROOT_MOUNT}/proc 
+    umount ${ROOT_MOUNT}/proc
     umount ${ROOT_MOUNT}/dev
     umount ${ROOT_MOUNT}/boot
 }
