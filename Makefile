@@ -1,5 +1,6 @@
-export CROSS_COMPILE=arm-linux-gnueabihf-
+export CROSS_COMPILE=arm-none-eabi-
 export ARCH=arm
+#export ARCH=armv7-a
 
 ################################################################################
 ## Config
@@ -9,13 +10,14 @@ KERNEL_DEFCONFIG         ?= sunxi
 
 UBOOT_BOARD_DEFCONFIG    ?= nanopi_neo
 UBOOT_FORMAT_CUSTOM_NAME ?= u-boot-sunxi-with-spl.bin
-UBOOT_VERSION            ?= v2017.11
+UBOOT_VERSION            ?= v2023.01 # was v2017.11
 
 IMAGE_SIZE               ?= 4000M
 
-ROOTFS_TARBALL     = alpine-minirootfs-3.7.0-armhf.tar.gz
-ROOTFS_TARBALL_URL = http://dl-cdn.alpinelinux.org/alpine/v3.7/releases/armhf/$(ROOTFS_TARBALL)
-
+#ROOTFS_TARBALL     = alpine-minirootfs-3.7.0-armhf.tar.gz
+#ROOTFS_TARBALL_URL = http://dl-cdn.alpinelinux.org/alpine/v3.7/releases/armhf/$(ROOTFS_TARBALL)
+ROOTFS_TARBALL = alpine-minirootfs-3.17.1-armhf.tar.gz
+ROOTFS_TARBALL_URL =http://dl-cdn.alpinelinux.org/alpine/v3.17/releases/armhf/$(ROOTFS_TARBALL)
 ################################################################################
 ## Possible modifiers:
 ##  DO_UBOOT_DEFCONFIG
