@@ -74,10 +74,13 @@ check_tools () {
         w=$(which "$l")
 	if [ -z "$w" ]; then missing="$missing $l,"; fi
     done
-    # check for cross-compiler...
-    l=$(dirname $(which gcc))
-    w=$(ls $l/arm-*-gcc)
-    if [ -z "$w" ]; then missing="$missing arm-xxx-gcc"; fi
+    l=$(which "$1") #try the cross-compiler in the path
+    if [ -z "$l" ]; then # try harder. :)
+        # check for cross-compiler...
+        l=$(dirname $(which gcc))
+        w=$(ls $l/arm-*-gcc)
+        if [ -z "$w" ]; then missing="$missing arm-xxx-gcc"; fi
+    fi
     if [ -n "$missing" ]; then 
         echo "These tools are missing in your system. Please install them first"
 	echo "$missing"
@@ -85,6 +88,6 @@ check_tools () {
     fi
 
 }
-check_tools
+check_tools "$2"
 find_apk_tools
 create_chroot "$1"

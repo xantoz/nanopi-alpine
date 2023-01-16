@@ -39,7 +39,7 @@ all: output/nanopi-alpine.img
 
 
 sources/$(ROOTFS_TARBALL):
-	ROOTFS_URL=$(ROOTFS_URL) ./build-chroot $@
+	ROOTFS_URL=$(ROOTFS_URL) ./build-chroot $@ $(CROSS_COMPILE)gcc
 
 .SECONDARY: sources/linux.git
 sources/u-boot.git:
