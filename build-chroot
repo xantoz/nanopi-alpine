@@ -1,0 +1,85 @@
+#!/bin/bash
+cdir=$(pwd)
+find_apk_tools () {
+    local burl pkg
+    apk=$(which apk)
+    
+    if [ -z "$apk" ]; then # get apk-tools-static
+        echo "##############################"
+        echo "# You do not have apk, so we #"
+        echo "# will get a static copy and #"
+        echo "# and use it                 #"
+        echo "##############################"
+        arch=$(uname -m) # armv6l> armhf aarch64 armv7
+        case $arch in
+            armv6*|armhf) arch="armhf";;
+            x86_64|x86|aarch64) arch="$arch";;
+            armv7*) arch="armv7";;
+            *) echo "unknown native arch '$arch'"
+            exit 1	
+        esac
+        burl="$ROOTFS_URL/main/$arch"
+        wget -O index.html "$burl"
+        pkg=$(grep apk-tools-static index.html |sed 's!.*apk-!apk-!;s!<.*!!')
+        wget -O apk-tools-static.apk "$burl/$pkg"
+        mkdir apk
+        cd apk
+        tar -xf ../apk-tools-static.apk
+        pkg=$(find . -name 'apk.static')
+        mv "$pkg" .
+        apk="$(pwd)/apk.static"
+        cd "$cdir"
+    fi
+}
+
+create_chroot () {
+    local bn sd out
+    sd=$(dirname "$1")
+    bn=$(basename "$1"|sed 's!\.tar\..*!!')
+    out="$sd/$bn"
+    
+    binlinks="ln mount less grep md5sum sh getty login sed"
+    mkdir -p "$out/etc/apk"
+    for r in main community; do
+        echo "$ROOTFS_URL/$r" >> "$out/etc/apk/repositories"
+    done
+    sudo "$apk" add -p "$out" --initdb -U --arch armhf --allow-untrusted alpine-base
+    sudo sed -i 's!^#ttyS0!ttyS0!' "$out/etc/inittab"
+
+    cd "$out/bin"
+    for b in $binlinks; do
+        if [ ! -e "$b" ]; then
+            sudo ln -s busybox $b
+	fi
+    done
+    cd ../sbin
+    if [ ! -e init ]; then sudo ln -s /bin/sh init; fi
+    if [ ! -e getty ]; then sudo ln -s /bin/getty getty; fi
+    cd ..
+    sudo chown -R root:root *
+    sudo tar -cf "../$bn.tar.gz" *
+    cd "$cdir"
+}
+
+check_tools () {
+    local list missing l w
+    missing=""
+    list="gcc tar sed grep wget sfdisk mkfs.f2fs mkfs.ext2 losetup"
+    l=$(which kpartx)
+    if [ -z "$l" ]; then
+        l=$(which partx)
+	if [ -z "$1" ]; then missing="partx or kpartx,"; fi
+    fi
+    for l in $list; do
+        w=$(which "$l")
+	if [ -z "$w" ]; then missing="$missing $l,"; fi
+    done
+    if [ -n "$missing" ]; then 
+        echo "These tools are missing in your system. Please install them first"
+	echo "$missing"
+    fi
+
+}
+check_tools
+find_apk_tools
+create_chroot "$1"

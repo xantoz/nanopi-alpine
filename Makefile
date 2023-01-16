@@ -13,11 +13,9 @@ UBOOT_FORMAT_CUSTOM_NAME ?= u-boot-sunxi-with-spl.bin
 UBOOT_VERSION            ?= v2023.01 # was v2017.11
 
 IMAGE_SIZE               ?= 4000M
-
-#ROOTFS_TARBALL     = alpine-minirootfs-3.7.0-armhf.tar.gz
-#ROOTFS_TARBALL_URL = http://dl-cdn.alpinelinux.org/alpine/v3.7/releases/armhf/$(ROOTFS_TARBALL)
-ROOTFS_TARBALL = alpine-minirootfs-3.17.1-armhf.tar.gz
-ROOTFS_TARBALL_URL =http://dl-cdn.alpinelinux.org/alpine/v3.17/releases/armhf/$(ROOTFS_TARBALL)
+# Note: we build this tarball.
+ROOTFS_TARBALL = alpine-chroot-armhf.tar.gz
+ROOTFS_URL =http://dl-cdn.alpinelinux.org/alpine/v3.17
 ################################################################################
 ## Possible modifiers:
 ##  DO_UBOOT_DEFCONFIG
@@ -39,8 +37,9 @@ KERNEL_PRODUCTS_OUTPUT=$(addprefix output/,$(notdir $(KERNEL_PRODUCTS)))
 .PHONY: all
 all: output/nanopi-alpine.img
 
+
 sources/$(ROOTFS_TARBALL):
-	wget -O 'sources/$(ROOTFS_TARBALL)' '$(ROOTFS_TARBALL_URL)'
+	ROOTFS_URL=$(ROOTFS_URL) ./build-chroot $@
 
 .SECONDARY: sources/linux.git
 sources/u-boot.git:
