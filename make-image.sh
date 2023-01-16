@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+#set -euo pipefail
 
 readonly CCred=`printf '\033[0;31m'`
 readonly CCyellow=`printf '\033[0;33m'`
@@ -9,6 +9,7 @@ readonly CCcyan=`printf '\033[36m'`
 readonly CCend=`printf '\033[0m'`
 readonly CCbold=`printf '\033[1m'`
 readonly CCunderline=`printf '\033[4m'`
+
 
 echo_err()
 {
@@ -25,6 +26,22 @@ log()
 {
     echo_err "${CCblue}[${CCend}${CCgreen}*${CCend}${CCblue}]${CCend} $@"
 }
+
+px=$(which kpartx)
+if [ -n "$px" ]; then
+	popt="vs"
+	mapper="/mapper"
+else
+	px=$(which partx)
+	if [ -n "$px" ]; then
+		popt="v"
+		mapper=''
+	else
+		log "Neither kpartx or partx are installed"
+		exit 1
+	fi
+fi
+log "using '$px' for partitioning"
 
 need_env_var()
 {
@@ -65,13 +82,13 @@ map_partitions()
     # Hack to get what loop device kpartx uses for the mappings
     # /dev/mapper/loopXp1 /dev/mapper/loopXp2 /dev/mapper/loopXp3 /dev/mapper/loopXp4
     log "Mapping image partitions"
-    LOOP=$(kpartx -avs "${IMAGE}" | grep -Po 'loop[[:digit:]]+' | head -1)
+    LOOP=$($px -a$popt "${IMAGE}" | grep -Po 'loop[[:digit:]]+' | head -1)
 }
 
 unmap_partitions()
 {
     log "Unmapping image partitions"
-    kpartx -dvs /dev/${LOOP}
+    $px -d$popt /dev/${LOOP}
     losetup -d /dev/${LOOP} || true
     LOOP=""
 }
@@ -85,8 +102,8 @@ install_uboot()
 
 create_filesystems()
 {
-    BOOT_DEVICE="/dev/mapper/${LOOP}p1"
-    ROOT_DEVICE="/dev/mapper/${LOOP}p2"
+    BOOT_DEVICE="/dev/${mapper}${LOOP}p1"
+    ROOT_DEVICE="/dev/${mapper}${LOOP}p2"
     (set -x; mkfs.ext2 -L nanopi-boot "${BOOT_DEVICE}")
     (set -x; mkfs.f2fs -l nanopi-root "${ROOT_DEVICE}")
 }
