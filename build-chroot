@@ -38,7 +38,7 @@ create_chroot () {
     bn=$(basename "$1"|sed 's!\.tar\..*!!')
     out="$sd/$bn"
     
-    binlinks="ln mount less grep md5sum sh getty login sed"
+    binlinks="ln mount less grep md5sum sh getty login sed ash ls vi"
     mkdir -p "$out/etc/apk"
     for r in main community; do
         echo "$ROOTFS_URL/$r" >> "$out/etc/apk/repositories"
