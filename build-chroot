@@ -74,9 +74,14 @@ check_tools () {
         w=$(which "$l")
 	if [ -z "$w" ]; then missing="$missing $l,"; fi
     done
+    # check for cross-compiler...
+    l=$(dirname $(which gcc))
+    w=$(ls $l/arm-*-gcc)
+    if [ -z "$w" ]; then missing="$missing arm-xxx-gcc"; fi
     if [ -n "$missing" ]; then 
         echo "These tools are missing in your system. Please install them first"
 	echo "$missing"
+	exit 1
     fi
 
 }
