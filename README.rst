@@ -23,5 +23,10 @@ Before build check Makefile and stage-2.sh files for tuning options like user, p
 make
 ```
 
+Notes
+-----
 
+The f2fs file system created a huge kernel dump when a file was written, so perhaps it is not
+as mature as it should be, and that was with the Alpine v3.17 kernel (6.2). Using the mkfs.ext2
+for the nanopi-root filesystem in make-image.sh would give a stable file system. If you want to run linux off a read only flash file system, use tmpfs on /run, /var/log, /tmp, and /var/lib/misc. The last mount is only if running dnsmasq.
 
